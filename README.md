@@ -1,1 +1,1 @@
-# -CS-615-Aspects-of-SystemAdministration
+# CS-615 Aspects-of-SystemAdministration

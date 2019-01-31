@@ -1,0 +1,21 @@
+#WEEK 1#
+
+
+New things Learned:
+-->Tasks performed by system administrator.
+-->DevOps, which is a modern type of administration.
+-->Required knowledge and skills to be a system administrator
+        -->Networking concepts
+        -->Cloud computing 
+        -->Specific services like DNS, Content Delivery
+-->what exactly user want:
+        -->Security
+        -->Scalability
+        -->Usability
+-->Basics of UNIX and history
+
+Questions:
+
+
+
+

@@ -1,10 +1,10 @@
 Before the class:
 
--->Learned how to use AWS ec2 and S3 via CLI.i
+-->Learned how to use AWS ec2 and S3 via CLI
 
 ----------------------------
 After the class:
-
+-->Object storage (also known as object-based storage) is a computer data storage architecture that manages data as objects, as opposed to other storage architectures like file systems which manage data as a file hierarchy, and block storage which manages data as blocks within sectors and tracks.
 -->We can only attach EBS volume when the volume and the ec2 instance are ini the same AZ.
     -->If not, create an Image of ec2 instance and relaunch it in different        AZ similar to volume and attach that volume to this new instance.
     -->Or , take a snapshot of the current volume and recreate it in different AZ similar to the ec2 instance and attach it.
@@ -13,3 +13,29 @@ After the class:
 
 --> We can attach multiple volumes to an instance.
 
+SAN:A storage area network is a type of local area network (LAN) designed to handle large data transfers and bulk storage of digital information. A SAN typically supports data storage, retrieval and replication on business networks using high-end servers, multiple disk arrays and interconnect technology.
+
+--> A SAN consists of interconnected hosts, switches and storage devices. The components can be connected using a variety of protocols. Fibre Channel is the original transport protocol of choice. Another option is Fibre Channel over Ethernet (FCoE), which lets organizations move Fibre Channel traffic across existing high-speed Ethernet, converging storage and IP protocols onto a single infrastructure. Other options include Internet Small Computing System Interface (iSCSI), commonly used in small and midsize organizations, and InfiniBand, commonly used in high-performance computing environments.
+
+-->A SAN typically uses Fibre Channel connectivity, while NAS typically ties into to the network through a standard Ethernet connection. A SAN stores data at the block level, while NAS accesses data as files. To a client OS, a SAN typically appears as a disk and exists as its own separate network of storage devices, while NAS appears as a file server.
+
+-->The two dominant communication technologies for storage networks - Fibre Channel and Internet Small Computer Systems Interface (iSCSI) - have both been widely used in SANs and competed with each other for many years.
+
+-->Fibre Channel (FC) became the leading choice for SAN networking during the mid-1990s. Traditional Fibre Channel networks contain special-purpose hardware called Fibre Channel switches that connect the storage to the SAN plus Fibre Channel HBAs (host bus adapters) that connect these switches to server computers. FC connections provide data rates between 1 Gbps and 16 Gbps.
+
+-->iSCSI was created as a lower cost, lower performance alternative to Fibre Channel and started growing in popularity during the mid-2000s. iSCSI works with Ethernet switches and physical connections instead of specialized hardware built specifically for storage workloads. It provides data rates of 10 Gbps and higher.
+
+
+--> A NAS system is a storage device connected to a network that allows storage and retrieval of data from a centralized location for authorized network users and heterogeneous clients.
+
+-->With a NAS system, data is continually accessible, making it easy for employees to collaborate, respond to customers in a timely fashion, and promptly follow up on sales or other issues because information is in one place. Because NAS is like a private cloud, data may be accessed remotely using a network connection, meaning employees can work anywhere, anytime.
+
+-->Storage area networks (SANs) and network attached storage (NAS) both provide networked storage solutions. A NAS is a single storage device that operates on data files, while a SAN is a local network of multiple devices.
+
+
+
+-->Direct-attached storage (DAS) is computer storage that is connected to one computer and not accessible to other computers. For an individual computer user, a hard drive or solid-state drive (SSD) is the usual form of direct-attached storage. In the enterprise, individual disk drives in a server are called direct-attached storage, as are groups of drives that are external to the server but are directly attached through Small Computer System Interface (SCSI), Serial Advanced Technology Attachment (SATA), Serial-Attached SCSI (SAS), Fibre Channel (FC) or iSCSI.
+
+-->DAS can be deployed as disks -- hard disk drives (HDDs) or SSDs -- inside a server chassis, for example, or as an external storage enclosure or enclosures directly connected to a card plugged into the internal bus of a server. It can also be an individual drive in a desktop or laptop computer.
+
+-->A direct-attached storage device is not networked. There is no connection through Ethernet or FC switches that connect network-attached storage (NAS) devices and storage area networks (SANs).

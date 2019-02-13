@@ -41,4 +41,20 @@ ex: echo "hi" > named_pipe
 
 Sockets: Sockets are also tools used for interprocess communication. The difference between sockets and pipes is that sockets will facilitate communication between processes running on different systems, or over the network.
 
+inode:  An inode is a data structure on a filesystem on Linux and other Unix-like operating systems that stores all the information about a file except its name and its actual data. 
+It consists the information like:
+->user owner and group owner ID’s
+->file type
+->access mode (permissions)
+->file access and modification time
+->file status modification time
+->number of links to the file
+->size of the file
+->disk device containing this file
 
+
+Questions:
+
+Format(1M):
+fstyp:
+week 2 exercise solution:

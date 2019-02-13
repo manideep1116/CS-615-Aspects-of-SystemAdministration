@@ -1,0 +1,15 @@
+Before the class:
+
+-->Learned how to use AWS ec2 and S3 via CLI.i
+
+----------------------------
+After the class:
+
+-->We can only attach EBS volume when the volume and the ec2 instance are ini the same AZ.
+    -->If not, create an Image of ec2 instance and relaunch it in different        AZ similar to volume and attach that volume to this new instance.
+    -->Or , take a snapshot of the current volume and recreate it in different AZ similar to the ec2 instance and attach it.
+
+-->After creating an EBS instance we can attach it to any EC2 instance(any OS) in the same AZ but only to one instance at a time.
+
+--> We can attach multiple volumes to an instance.
+

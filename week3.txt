@@ -1,0 +1,44 @@
+Before Class:
+
+
+--> On EBS filesystem the files are persistent even when the instance is terminated. The volume is automatically detached when the instance is terminated.
+
+
+
+
+
+After Class:
+
+
+Volume: A volume is a storage device, such as a fixed disk, floppy disk, or CD-ROM, that is formatted to store directories and files. A large volume can be divided into more than one logical volume, also called a partition.
+
+Partition: A partition is a logical division of a hard disk.
+
+The file /etc/fstab specifies which disks / partitions to mount where:
+$ cat /etc/fstab
+
+File system: The filesystem is responsible for storing the data on the disk . So to read/write data, it needs to know in which physical blocks the actual data is located; ie how to map files to the disk blocks.
+
+ORIGINAL or REGULAR FILES:Large majority of the files found on UNIX and Linux systems are ordinary files. Ordinary files contain ASCII (human-readable) text, executable program binaries, program data, and more.
+
+Directories: A directory is a binary file used to track and locate other files and directories. The binary format is used so that directories containing large numbers of filenames can be search quickly.
+
+Device(Special files): Device or special files are used for device I/O on UNIX and Linux systems. They appear in a file system just like an ordinary file or a directory.i
+-->On UNIX systems there are two flavors of special files for each device, character special files and block special files. Linux systems only provide one special file for each device.
+-->when a character special file is used for device I/O, data is transferred one character at a time. This type of access is called raw device access.
+-->When a block special file is used for device I/O, data is transferred in large fixed-size blocks. This type of access is called block device access.
+
+Links:A link is a tool used for having multiple filenames that reference a single file on a physical disk. They appear in a file system just like an ordinary file or a directory.
+-->Like special files, links also come in two different flavors. There are hard links and symbolic links.
+-->Hard links do not actually link to the original file. Instead they maintain their own copy of the original file's attributes (i.e. location on disk, file access permissions, etc.). If the original file is deleted, its data can still be accessed using the hard link.
+-->symbolic links contain a pointer, or pathname, to the original file. If the original file is deleted, its data can no longer be accessed using the symbolic link, and the link is then considered to be a stale link. 
+
+
+Named Pipes:Named pipes are tools that allow two or more system processes to communicate with each other using a file that acts as a pipe between them. This type of communication is known as interprocess communication, or IPC for short.
+ex: echo "hi" > named_pipe 
+    $ cat named_pipe
+
+
+Sockets: Sockets are also tools used for interprocess communication. The difference between sockets and pipes is that sockets will facilitate communication between processes running on different systems, or over the network.
+
+

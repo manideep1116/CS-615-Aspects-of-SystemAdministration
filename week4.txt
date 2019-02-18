@@ -1,0 +1,38 @@
+Before class:
+
+Home work description:
+
+1) Finding the availability zone of given volumeID read through $varname (input) by the following command.
+aws ec2 describe-volumes --volume-ids $varname --query 'Volumes[*].[Availabilit    yZone]' --output text
+
+2) Creating the ec2-instance in the same AZ as of EBS. 
+  -> Here we wont create any key-pair for ec2. We will create a default key-pair in our laptop using ssh keygen and will import this key from aws ec2.
+  ->That is, the user running the tool must have set up a
+  keypair called 'ec2-backup' in AWS and must have set up their
+  ~/.ssh/config to use that key.  That would look like this:
+
+  $ ssh-keygen -t rsa -C "ec2-backup only" -f ~/.ssh/ec2-backup -b 4096
+  [...]
+  $ aws ec2 import-key-pair --key-name ec2-backup \
+          --public-key-material file://~/.ssh/ec2-backup.pub
+          [...]
+  $ aws ec2 describe-key-pairs --key-name ec2-backup
+       KEYPAIRS        b6:6f:b5:90:0f:14:85:a6:82:d0:61:b8:78:3c:c8:b1 ec2-backup
+
+  $ grep -A6 amazonaws ~/.ssh/config
+  Host *amazonaws.com
+          User root
+          IdentityFile ~/.ssh/ec2
+          IdentityFile ~/.ssh/ec2-backup
+          IdentitiesOnly yes
+          UserKnownHostsFile /dev/null
+          StrictHostKeyChecking no
+
+
+     At this point, everything is set up and your tool can use the'ec2-backup' key name to create and access instances:
+
+   $ aws ec2 run-instances --key-name ec2-backup --image-id ami-569ed93c \ --instance-type t1.micro
+        [...]
+   $ ssh ec2-3-84-173-113.compute-1.amazonaws.com hostname ip-10-159-231-196.ec2.internal
+
+   -> Now, We need not to create any security group.If you don't specify a security group when you launch an instance, the instance is automatically associated with the default security group and names them as default.

@@ -1,6 +1,6 @@
 Before class:
 
-Home work description:
+Home work-2(ec2-backup) description:
 
 1) Finding the availability zone of given volumeID read through $varname (input) by the following command.
 aws ec2 describe-volumes --volume-ids $varname --query 'Volumes[*].[Availabilit    yZone]' --output text

@@ -36,3 +36,28 @@ aws ec2 describe-volumes --volume-ids $varname --query 'Volumes[*].[Availabilit 
    $ ssh ec2-3-84-173-113.compute-1.amazonaws.com hostname ip-10-159-231-196.ec2.internal
 
    -> Now, We need not to create any security group.If you don't specify a security group when you launch an instance, the instance is automatically associated with the default security group and names them as default.
+
+----------------------------------------------------------------
+   After Class:
+
+Package Manager:
+A package manager, also known as a package management system (PMS), is a program used to install, uninstall and manage software packages.
+-->Software packages and package managers are often mentioned in connection to Unix and Unix-derived environments, such as Linux. A Linux distribution may consist of thousands of software packages.
+-->A package manager or package management system is a collection of software tools that automates the process of installing, upgrading, configuring, and removing computer programs for a computer's operating system in a consistent manner
+-->Package managers are designed to eliminate the need for manual installs and updates.i
+-->Examples of package managers include Red Hat Package Manager (RPM), Yellowdog Updater, Modified (YUM) and Advanced Packaging Tool (APT). 
+-->dpkg is the software at the base of the package management system in the free operating system Debian and its numerous derivatives. dpkg is used to install, remove, and provide information about .deb packages.
+-->Each package manager relies on the format and metadata of the packages it can manage. That is, package managers need groups of files to be bundled for the specific package manager along with appropriate metadata, such as dependencies. Often, a core set of utilities manages the basic installation from these packages and multiple package managers use these utilities to provide additional functionality. 
+    -->For example,  Advanced Packaging Tool (apt) library, which, in turn, relies on dpkg for core functionality.
+    -->APT relies on the concept of repositories in order to find software and resolve dependencies. For apt, a repository is a directory containing packages along with an index file. This can be specified as a networked or CDROM location. The Debian project keeps a central repository of over 25,000 software packages ready for download and installation. 
+    -->dpkg only installs a package, so doing dpkg -i packageName.deb will only install this Deb package, and will notify you of any dependencies that need to be installed, but it will not install them, and it will not configure the packageName.deb because well...the dependencies are not there.
+    -->apt-get is a Package Management System that handles the installation of Deb packages on Debian-based Linux distributions. A Package Management System is a set of tools that will help you install, remove, and change packages easily. So apt-get is like a clever dpkg.
+    -->A .deb file contains the files needed by an application to run, as well as (I like to call it) "meta-data" that holds other information, such as the names of the dependencies the application needs. If you want to see the contents of a .deb file, you can use the command dpkg -c packageName.deb, and if you want to see this "meta-data" information, use the command dpkg -I pacakgeName.deb (and if you want to only see the dependencies, do dpkg -I packageName.deb | grep Depends).
+    -->They needed a tool to install these .deb files, so they came up with the dpkg tool. This tool, however, will just install the .deb file, but will not install its dependencies because it doesn't have those files and it does not have access to "repositories" to go pull the dependencies from.
+    -->Then, they came up with apt-get, which automates the problems in the previous point. Underneath the hood, apt-get is basically dpkg (I like to think of it as apt-get being a front-end for dpkg), but a clever one that will look for the dependencies and install them. It even looks at the currently installed dependencies and determines ones that are not being used by any other packages, and will inform you that you can remove them.
+
+Root User: The root user in a Linux system has the maximum permissions and he/she can do anything to the systems. Apart from letting a normal user install/delete some package, root user permissions also act as an extra security layer.
+
+sudo:  sudo runs a single command with root permissions. When a user runs a command with sudo, e.g., sudo command, he/she needs to enter the current user account password to run it as root user. Sudo uses a config file (/etc/sudoers) to define the rights of different users.
+
+su: The su command stands for super user or root user. It executes on a Linux system with no additional options. The user just needs to add root account password. In the terminal, su also lets you access any other user account using the required password. That’s why su also stands for substitute user or switch user. Simply type su followed by the user account name, e.g., sudo fossbytes, and you’ll enter the password for fossbytes. After completing the job, you can exit the root shell by typing exit. Overall, su basically starts another shell instance with the privileges of the intended user.

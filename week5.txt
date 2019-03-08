@@ -1,3 +1,165 @@
-Before Class:
+After Class:
+
+$ sudo tcpdump -w /tmp/test1 port 80 &
+tcpdump: tcpdump captures all network packets on the wire; since it captures _all_ packets, it requires super-user privileges. writing them to a file lets us analyze the packets later.
+-->after running the tcpdump command (and putting it in the background via '&'), run this:  curl -s -I http://www.cs.stevens.edu/ >/dev/null
+i.e., we just make a simple HTTP request to the stevens cs dept. website
+bring the tcpdump job to the foreground: $fg
+-->Now, interrupt it with Ctrl+C
+After that, let's grab the first packet we collected:
+
+$ sudo tcpdump -r /tmp/test1 -n -XX -c 1
+reading from file /tmp/test1, link-type EN10MB (Ethernet)
+22:30:53.992765 IP 192.168.1.70.32894 > 155.246.89.84.80: Flags [S], seq 1658885297, win 29200, options [mss 1460,sackOK,TS val 2894062248 ecr 0,nop,wscale 7], length 0
+     0x0000:  485d 36e7 c1d7 7c67 a21b de0b 0800 4500  H]6...|g......E.
+     0x0010:  003c 8e3e 4000 4006 f544 c0a8 0146 9bf6  .<.>@.@..D...F..
+     0x0020:  5954 807e 0050 62e0 94b1 0000 0000 a002  YT.~.Pb.........
+     0x0030:  7210 172e 0000 0204 05b4 0402 080a ac7f  r...............
+     0x0040:  e2a8 0000 0000 0103 0307                 ..........
+
+
+there's a lot of information in there, and as sysadmins, we often need to be able to read through the raw packets to troubleshoot systems
+other tools like wireshark exist, but it's important to be able to use the basic command and understand the packets, so that's what we'll stick with
+If you're looking at the output, and you haven't made any other http requests in the mean time, then you should see something similar to what I pasted there.
+look at the first couple of bytes:
+
+485d 36e7 c1d7 7c67 a21b de0b 0800
+
+This is the ethernet information for the packet.
+
+Destination address: 48:5d:36:e7:c1:d7
+Source address: a2:1b:de:0b:08:00
+Type: IP (0800)
+
+since ethernet uses MAC addresses in hex, we can easily see the addresses right there in the packet
+check your mac address via ifconfig:
+
+layer 2: Etherenet
+$ ifconfig | grep ether
+      ether 8c:85:90:13:73:c1
+
+
+inow since per the type 0x800, the network protocol we encapsulate here is IP, the next couple of bytes are IP specific
+4500 003c 8e3e 4000 40
+Those represent the various IP(v4) headers.
+skipping over the various fields, we end up at bytes:
+
+06 f544 c0a8 0146 9bf6 5954
+-->06 gives the type of the protocol we're encapsulating, TCP
+f544 is the checksum
+The source address is hex c0a8 0146, which you can convert to 192.168.1.70
+the dest address is 9bf6 5954; 155.246.89.84
+the remainder of the packet is TCP stuff, which we'll pretty much ignore in this lecture
+(we'll get to TCP next class)
+so if you sort through your tcpdump output, you should see your own source address in hex
+compare with your 'ifconfig' output
+Layer 3: Internet
+ifconfig  | grep inet
+         inet 127.0.0.1  netmask 255.0.0.0
+         inet 192.168.1.70  netmask 255.255.255.0  broadcast 192.168.1.255
+here we see my interface with the above mac address is configured to use the IP address we just saw
+it also shows additional information about the network configuration, namely the netmask and broadcast address
+
+--> IP addresses in IPv4 are 32 bit numbers.
+
+--> so a quick way to convert numbers from different bases are dc(1) and (bc), command-line calculators:
+eg: $ echo 9bf65954 | tr '[a-z]' '[A-Z]' | xargs echo "ibase=16; obase=2;" | bc
+10011011111101100101100101010100
+
+so our hex address translated into binary becomes 10011011111101100101100101010100
+but we humans don't find that particularly easy to read
+the 32 bit number is split into four octets:
+10011011 11110110  01011001 01010100
+which makes it a bit easier to read
+
+$ echo "ibase=2; 10011011" | bc
+155
+
+so the first octet is 155, the second 246, the third 89 and the last 84, yielding the IP address in the format we're used to: 155.246.89.84
+--> "ibase" is input base, "obase" output base, obase=10 is the default
+
+-->on an IP network, hosts in the same "broadcast domain" can talk to each other directly.
+that is, if your hosts are within the same layer2 broadcast domain, you don't need IP
+you can talk ethernet directly
+so to know whether or not an address is in your broadcast domain, you have to separate the address into a "network" and a "host" component
+back in the day, this was done automatically by inspection of the first couple of bits
+("classful networking")
+there are three different classes of IPv4 networks
+Well, five, actually.  Identified by the first four bits.
+I said "three", because two are special.
+-->So by splitting the IP address into a network portion and a host portion, you could automatically define the broadcast domain of an address.
+You do so by applying a "netmask", so called because you are masking a number of bits.
+eg: 10011011  11110110  01011001  01010100
+That's our IP address.  It begins with "10", so it belongs to class B. Class A starts with 0. Class C starts with 110.
+--> So in a class B network, the first 16 bits specify the network portion, the last 16 the host portion. so a class B classful address has an implied netmask of: 11111111  11111111  00000000  00000000
+
+ipcalc:  ipcalc  takes  an  IPv4  address and netmask and calculates the resulting broadcast, network, Cisco wildcard mask, and host range. By giving a second netmask,  you can design sub- and supernetworks. It is also intended to be a teaching tool and  presents  the  results  as  easy-to-understand binary values.
+
+ipcalc -n 155.246.89.84/28
+Address:   155.246.89.84        10011011.11110110.01011001.0101 0100
+Netmask:   255.255.255.240 = 28 11111111.11111111.11111111.1111 0000
+Wildcard:  0.0.0.15             00000000.00000000.00000000.0000 1111
+=>
+Network:   155.246.89.80/28     10011011.11110110.01011001.0101 0000
+HostMin:   155.246.89.81        10011011.11110110.01011001.0101 0001
+HostMax:   155.246.89.94        10011011.11110110.01011001.0101 1110
+Broadcast: 155.246.89.95        10011011.11110110.01011001.0101 1111
+Hosts/Net: 14                    Class B
+--> note how it identifies the network as a default Class B network (inspection of the first four bits)
+the netmask in decimal is just the outcome of the conversion from binary
+the first address on a  network cannot be assigned to  host, it's the network address
+the last address on a network cannot be assigned, because it's the broadcast address
+what's so special about a "broadcast address"?
+what do you think will happen when you send a packet to that address?
+ans: Broadcast to everyone on the network. this happens on layer 2, so you need to be on that l2 network
+
+-->so with CIDR, you specify the bits in the netmask
+from that, you can then derive all the information about the network
+with A.B.C.D/N, you get:
+- N = bits describing network portion of address
+- M=32-N = bits in host portion of address
+- 2^M = number of addresses on this subnet
+- 2^M - 2 = number of possible hosts
+
+--> IANA- The Internet Assigned Numbers Authority (IANA) oversees global IP address/AS number allocation, root zone management etc.
+
+-->Regional Internet Registries (RIR) manage the allocation and registration of Internet number resources within a region of the world.
+
+RIRs assign blocks of IP addresses to the Local Internet Registries
+(LIR).LIRs are either ISPs, enterprises using a lot of addresses, or academic institutions.
+
+--> 127.0.0.0/8 is an entire /8 that's not usable on the internet. 127.0.0.0 also reserved as in loop back address.
+
+--> So in that case if all RIRs run out of IPs and there is still a need for some new IPs what happens then? in that case, you need to either re-organize the IP space you have, or get with the plan and move to IPv6.
+
+
+IPV6:
+-->an IPv6 address is 128 bits, written as 8 16 bit words in case-insensitive hex separated by colons. eg: 2031:0000:0000:030F:0000:0000:0000:130B
+you can squeeze zeros: 2031:0:0:30F:0:0:0:130B
+
+
+--> you can look up which AS number a network belongs to and find out who they peer with and where etc.
+$ host www.google.com
+www.google.com has address 172.217.0.36
+www.google.com has IPv6 address 2607:f8b0:4006:807::2004
+$ whois -h whois.cymru.com 2607:f8b0:4006:807::2004
+AS      | IP                                       | AS Name
+15169   | 2607:f8b0:4006:807::2004                 | GOOGLE - Google Inc., US
+$ curl -s https://peeringdb.com/api/net?asn=15169 | python -mjson.tool | more
+{ "data": [ {
+           "aka": "Google, YouTube (for Google Fiber see AS16591 record)",
+            reated": "2005-02-06T06:41:04Z",
+            "id": 433,
+            "info_ipv6": true,
+            "info_prefixes4": 15000,
+            "info_prefixes6": 750,
+            "info_ratio": "Mostly Outbound",
+
+--> Autonomous System Numbers (ASNs) are assigned by IANA to the RIRs.
+--> Carriers connect their Autonomous Systems at Internet Exchange Points (IXPs) to route traffic between the different networks. This peering happens amongst carriers on a tiered basis.
+--> An autonomous system number (ASN) is a unique number that's available globally to identify an autonomous system and which enables that system to exchange exterior routing information with other neighboring autonomous systems.
+--> The number of autonomous system numbers is limited. For autonomous system numbers to be assigned, current guidelines need the network to be multi-homed and have a unique routing policy. Autonomous system numbers can be assigned only through a request to the local Internet registry. 
+--> An Autonomous System (AS) is a set of Internet routable IP prefixes belonging to a network or a collection of networks that are all managed and supervised by a single entity or organization. An AS utilizes a common routing policy controlled by the entity. The AS is assigned a globally unique 16 digit identification number一known as the AS number or ASN一by the Internet Assigned Numbers Authority (IANA).
+--> Border Gateway Protocol (BGP) is the protocol that manages the routed peerings, prefix advertisement and routing of packets between different autonomous systems across the Internet. BGP uses the ASN to uniquely identify each system. In effect, BGP is the routing protocol for AS paths across the Internet.
 
 

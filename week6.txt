@@ -6,3 +6,4 @@ https://google.github.io/styleguide/shell.xml
 arp: ARP is used to resolve the MAC addresses, and work on Layer 2 of the OSI model(data link layer).
 
 ndp: In IPV6 we have neighbour discovery protocol(NDP) used to determine neighbourhosts, and will replace ARP which was used in IPV4.  It will perform similar tasks of the Address Resolution Protocol (ARP) and ICMP Router Discovery Protocol. Neighbor Discovery operates in the Link Layer (Layer #2 of the OSI model) and uses ICMPv6 (the obvious IPv6 version of ICMP) to discover neighboring nodes. It will provide the translation between the IPv6 address and the Link Layer address.
+
